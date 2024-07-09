@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block conteudo %}
+<div class="container">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ pagina_agendamento }}</h1>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 class="mb-3 text-primary">
+                Formulário para Criar Tarefas
+            </h4>
+
+            {% if mensagem %}
+                <div class="alert alert-success" role="alert">
+                    {{ mensagem }}
+                </div>
+            {% endif %}
+
+            <p class="md-5 ml-1">
+                <smal>
+                    O asterisco (*) indica que o campo é obrigatório<br>
+                    Selecione a empresa e oportunidade corretamente
+                </smal>
+            </p>
+
+            <!--Form criado com codificações do django para melhoria de form no template-->
+            {% if form.errors %}
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for erro in field.errors %}
+                            <div class="alert alert-warning" role="alert">
+                                {{ erro }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                <div class="row">
+                    {% csrf_token %}  <!--Tag para impedir que sites enviem requisições atraves do -->
+
+                    {% for field in form_tarefa %}
+                    <div class="form-group col-md-6">
+                        <label><strong>{{ field.label }} {% if field.field.required %} * {% endif %}</strong></label>
+                        {% render_field field placeholder=field.label class="form-control" %}
+                    </div>
+                    {%  endfor %}
+                </div>
+
+                <div class="d-flex justify-content-right mt-4">
+                    <button class="btn btn-primary mr-2" type="submit">
+                        <span class="text">Salvar dados</span>
+                    </button>
+                    <a href="{% url 'list_tarefas' %}" class="btn btn-secondary text-white" type="button" style="margin-left: 10px;">
+                        <span class="text">Voltar para lista</span>
+                    </a>
+                </div>
+                
+
+                
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

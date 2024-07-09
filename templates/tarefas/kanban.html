@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+body {
+    background-image: url(/static/assets/img/fundo_kanban.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+
+.kanban-board {
+    display: flex;
+    gap: 1rem;
+    
+}
+.kanban-column {
+    background-color: #5f656a3d;
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 200px;
+    flex: 1;
+}
+.kanban-card {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: grab;
+}
+.kanban-card:active {
+    cursor: grabbing;
+}
+
+.titulo {
+    border-radius: 20px;
+}
+
+.icons-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icons-profile > div {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.icons-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+span.text {
+        font-weight: bold;
+        font-size: 1.1rem; /* Aumente o valor para aumentar o tamanho da fonte */
+        border: black;
+    }
+
+</style>
+
+<!-- Modal Criar Tarefa 
+<div class="modal fade" id="modalCriarTarefa" tabindex="-1" role="dialog" aria-labelledby="modalCriarTarefaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCriarTarefaLabel">Adicionar Tarefa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Conteúdo do seu formulário de criação de tarefa aqui 
+                Exemplo: 
+                <form method="POST" action="{% url 'tarefa_create' %}">
+                    {% csrf_token %}
+                    Campos do formulário 
+                    <label for="atividade">Atividade:</label>
+                    <input type="text" id="atividade" name="atividade" required>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<!-- Barra de Navegação Kanban-->
+<nav class="navbar navbar-expand-lg navbar-light" 
+style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px 40px; width: 60%; border-radius: 15px;">
+    <div class="container-fluid">
+        <!-- Botões -->
+        <div class="d-flex justify-content-end w-100">
+            <a href="{% url 'tarefa_create' %}" class="btn  btn-icon-split btn-sm open-popup" data-popup-url="{% url 'tarefa_create' %}">
+                <span class="text">Adicionar tarefa</span>
+            </a>
+            <a href="#" onclick="showMinhasTarefas(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Minhas Tarefas</span>
+            </a>
+            <a href="#" onclick="showAllTarefas(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Todas Tarefas</span>
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-sm open-popup" style="margin-left: 20px;" data-popup-url="{% url 'index' %}">
+                <span class="text">Voltar para home</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!--Inicio Kanban-->
+
+<div class="kanban-board mb-5">
+    <div class="kanban-column" id="to-do">
+        <div class="titulo col-15 p-2 bg-primary mb-4">
+            <h5 class="text-center text-white">Novas</h5>
+        </div>
+        {% for tarefa in tarefas %}
+            {% if tarefa.status == 'Nova' %}
+            <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong>{{ tarefa.atividade }}</strong><br>
+                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <p class="mt-3">{{ tarefa.contato }}</p>
+                    <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                </div>
+                <!-- Ícones e Foto -->
+                <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a> <!-- Ícone de telefone -->
+                        <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a> <!-- Ícone de carta -->
+                        <a href="{% url 'tarefa_update' tarefa.id %}" ><i class="fas fa-pencil-alt"></i></a> <!-- Ícone de chat -->
+                    </div>
+                    {% if tarefa.usuario.foto_perfil %}
+                        <img src="{{ tarefa.usuario.foto_perfil.url }}" alt="Foto de perfil" 
+                        style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                    {% endif %}
+                </div>
+                <!-- Fim dos ícones e Foto -->
+                <input type="hidden" class="update-url" value="{% url 'update_kanban' tarefa.id %}">
+                <input type="hidden" class="usuario-id" value="{{ tarefa.usuario.id }}">
+
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+    <div class="kanban-column" id="in-progress">
+        <div class="titulo col-15 p-2 bg-warning mb-4">
+            <h5 class="text-center text-white">Em Andamento</h5>
+        </div>
+        {% for tarefa in tarefas %}
+            {% if tarefa.status == 'Em andamento' %}
+            <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong>{{ tarefa.atividade }}</strong><br>
+                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <p class="mt-3">{{ tarefa.contato }}</p>
+                    <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                </div>
+                <!-- Ícones e Foto -->
+                <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a> <!-- Ícone de telefone -->
+                        <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a> <!-- Ícone de carta -->
+                        <a href="{% url 'tarefa_update' tarefa.id %}" ><i class="fas fa-pencil-alt"></i></a> <!-- Ícone de chat -->
+                    </div>
+                    {% if tarefa.usuario.foto_perfil %}
+                        <img src="{{ tarefa.usuario.foto_perfil.url }}" alt="Foto de perfil" 
+                        style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                    {% endif %}
+                </div>
+                <!-- Fim dos ícones e Foto -->
+                <input type="hidden" class="update-url" value="{% url 'update_kanban' tarefa.id %}">
+                <input type="hidden" class="usuario-id" value="{{ tarefa.usuario.id }}">
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+<div class="kanban-column" id="done">
+    <div class="titulo col-15 p-2 bg-success mb-4 text-center">
+        <h5 class="text-center text-white">Concluída</h5>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+        {% for tarefa in tarefas %}
+            {% if tarefa.status == 'Concluida' %}
+            <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong>{{ tarefa.atividade }}</strong><br>
+                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <p class="mt-3">{{ tarefa.contato }}</p>
+                    <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                </div>
+                <!-- Ícones e Foto -->
+                <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; margin-bottom: 10px;">
+                        <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a> <!-- Ícone de telefone -->
+                        <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a> <!-- Ícone de carta -->
+                        <a href="{% url 'update_kanban' tarefa.id %}" ><i class="fas fa-pencil-alt"></i></a> <!-- Ícone de chat -->
+                    </div>
+                    {% if tarefa.usuario.foto_perfil %}
+                        <img src="{{ tarefa.usuario.foto_perfil.url }}" alt="Foto de perfil" 
+                        style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                    {% endif %}
+                </div>
+                <!-- Fim dos ícones e Foto -->
+                <input type="hidden" class="update-url" value="{% url 'update_kanban' tarefa.id %}">
+                <input type="hidden" class="usuario-id" value="{{ tarefa.usuario.id }}">
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+</div>
+</div>
+
+
+<script>
+    const cards = document.querySelectorAll('.kanban-card');
+    const columns = document.querySelectorAll('.kanban-column');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', dragStart);
+        card.addEventListener('dragend', dragEnd);
+    });
+
+    columns.forEach(column => {
+        column.addEventListener('dragover', dragOver);
+        column.addEventListener('drop', drop);
+    });
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+        setTimeout(() => e.target.classList.add('invisible'), 0);
+    }
+
+    function dragEnd(e) {
+        e.target.classList.remove('invisible');
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function drop(e) {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text');
+        const card = document.querySelector(`[id='${id}']`);
+        const column = e.target.closest('.kanban-column');
+        column.appendChild(card);
+
+        let status;
+        if (column.id === 'to-do') {
+            status = 'Nova';
+        } else if (column.id === 'in-progress') {
+            status = 'Em andamento';
+        } else if (column.id === 'done') {
+            status = 'Concluida';
+        }
+
+        fetch(`/tarefas-update-kanban/${id.replace('card', '')}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Adiciona o CSRF token
+            },
+            body: JSON.stringify({status: status})
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar status.');
+            }
+            return response.json();
+        }).then(data => {
+            console.log('Status atualizado com sucesso:', data);
+        }).catch(error => {
+            console.error('Erro:', error);
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const openPopups = document.querySelectorAll('.open-popup');
+        openPopups.forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = popup.getAttribute('data-popup-url');
+                openPopup(url);
+            });
+        });
+
+        function openPopup(url) {
+            const width = 800;
+            const height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            window.open(url, 'popup', `width=${width},height=${height},left=${left},top=${top}`);
+        }
+    });
+</script>
+
+<script>
+    $('#modalCriarTarefa').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+    });
+</script>
+
+<!-- Script para tratar o filtro de tarefas Kanban-->
+
+<script>
+    function showAllTarefas(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+
+        // Mostra todas as tarefas
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            card.style.display = 'flex';
+        });
+    }
+
+    function showMinhasTarefas(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+
+        // Esconde todas as tarefas
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            card.style.display = 'none';
+        });
+
+        // Mostra apenas as tarefas do usuário atual
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            if (card.querySelector('.usuario-id').value == '{{ request.user.id }}') {
+                card.style.display = 'flex';
+            }
+        });
+    }
+</script>
+{% endblock conteudo %}

@@ -1,0 +1,29 @@
+.kanban-board {
+    display: flex;
+    gap: 1rem;
+    margin-top: 50px;
+}
+.kanban-column {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 1rem;
+    min-width: 200px;
+    flex: 1;
+}
+.kanban-card {
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: grab;
+}
+.kanban-card:active {
+    cursor: grabbing;
+}
+.titulo {
+    border-radius: 20px;
+}
+.kanban-card i {
+    margin-left: 310px;
+}

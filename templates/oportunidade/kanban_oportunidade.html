@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background-image: url(/static/assets/img/fundo_kanban.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+    .kanban-board {
+        display: flex;
+        gap: 1rem;
+    }
+    .kanban-column {
+        background-color: #5f656a3d;
+        border-radius: 10px;
+        padding: 1rem;
+        min-width: 200px;
+        flex: 1;
+    }
+    .kanban-card {
+        background-color: #ffffff;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        cursor: grab;
+    }
+    .kanban-card:active {
+        cursor: grabbing;
+    }
+    .titulo {
+        border-radius: 20px;
+    }
+    .icons-profile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .icons-profile > div {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    .icons-profile img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+    span.text {
+        font-weight:normal;
+        font-size: 1.1rem;
+        color: #000000;
+        border: rgb(35, 22, 220);
+    }
+</style>
+
+<!-- Barra de Navegação Kanban -->
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px 40px; width: 60%; border-radius: 15px;">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-end w-100">
+            <a href="{% url 'oportunidade_create' %}" class="btn btn-icon-split btn-sm open-popup" data-popup-url="{% url 'lead_create' %}">
+                <span class="text">Adicionar Nova</span>
+            </a>
+            <a href="#" onclick="showMinhasOportunidades(event)" class="btn btn-sm" style="margin-left: 20px;" >
+                <span class="text">Minhas Oportunidades</span>
+            </a>
+            <a href="#" onclick="showAllOportunidades(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Todas Oportunidades</span>
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-sm" style="margin-left: 20px;" data-popup-url="{% url 'index' %}">
+                <span class="text">Voltar para home</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Inicio Kanban -->
+<div class="kanban-board mb-5">
+    <div class="kanban-column" id="to-do">
+        <div class="titulo col-15 p-2 bg-warning mb-4">
+            <h5 class="text-center text-white">Em negociação</h5>
+        </div>
+        {% for oportunidade in oportunidades %}
+            {% if oportunidade.status_negociacao == 'em negociacao' %}
+                <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                        <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                        <p class="mt-3">{{ oportunidade.contato }}</p>
+                        <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                    </div>
+                    <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="display: flex; margin-bottom: 10px;">
+                            <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
+                            <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
+                            <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                        </div>
+                        {% if oportunidade.usuario.foto_perfil %}
+                            <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                        {% endif %}
+                    </div>
+                    <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                    <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="kanban-column" id="in-progress">
+        <div class="titulo col-15 p-2 bg-success mb-4">
+            <h5 class="text-center text-white">Ganha</h5>
+        </div>
+        {% for oportunidade in oportunidades %}
+            {% if oportunidade.status_negociacao == 'ganha' %}
+                <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                        <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                        <p class="mt-3">{{ oportunidade.contato }}</p>
+                        <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                    </div>
+                    <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="display: flex; margin-bottom: 10px;">
+                            <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
+                            <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
+                            <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                        </div>
+                        {% if oportunidade.usuario.foto_perfil %}
+                            <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                        {% endif %}
+                    </div>
+                    <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                    <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="kanban-column" id="done">
+        <div class="titulo col-15 p-2 bg-danger mb-4 text-center">
+            <h5 class="text-center text-white">Perdidas</h5>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            {% for oportunidade in oportunidades %}
+                {% if oportunidade.status_negociacao == 'perdida' %}
+                    <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                            <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                            <p class="mt-3">{{ oportunidade.contato }}</p>
+                            <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                        </div>
+                        <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="display: flex; margin-bottom: 10px;">
+                                <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
+                                <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
+                                <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                            </div>
+                            {% if oportunidade.usuario.foto_perfil %}
+                                <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                            {% endif %}
+                        </div>
+                        <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                        <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.kanban-card');
+    const columns = document.querySelectorAll('.kanban-column');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', dragStart);
+        card.addEventListener('dragend', dragEnd);
+    });
+
+    columns.forEach(column => {
+        column.addEventListener('dragover', dragOver);
+        column.addEventListener('drop', drop);
+    });
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+        setTimeout(() => e.target.classList.add('invisible'), 0);
+    }
+
+    function dragEnd(e) {
+        e.target.classList.remove('invisible');
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function drop(e) {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text');
+        const card = document.querySelector(`[id='${id}']`);
+        const column = e.target.closest('.kanban-column');
+        column.appendChild(card);
+
+        // Determina o novo status com base no ID da coluna
+        let status;
+        if (column.id === 'to-do') {
+            status = 'em negociacao';
+        } else if (column.id === 'in-progress') {
+            status = 'ganha';
+        } else if (column.id === 'done') {
+            status = 'perdida';
+        }
+
+        // Envia uma requisição AJAX para atualizar o status
+        fetch(`/oportunidade-status-kanban/${id.replace('card', '')}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Adiciona o CSRF token
+            },
+            body: JSON.stringify({status: status})
+            }).then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar status.');
+            }
+            return response.json();
+        }).then(data => {
+            console.log('Status atualizado com sucesso:', data);
+        }).catch(error => {
+            console.error('Erro:', error);
+        });
+    }
+
+    // Função para obter o CSRF token dos cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<!--Script para abrir o pop-ups-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const openPopups = document.querySelectorAll('.open-popup');
+        openPopups.forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = popup.getAttribute('data-popup-url');
+                openPopup(url);
+            });
+        });
+
+        function openPopup(url) {
+            const width = 800;
+            const height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            window.open(url, 'popup', `width=${width},height=${height},left=${left},top=${top}`);
+        }
+    });
+</script>
+
+<!--Script para tratar filtro de oportunidade de usuario logado-->
+
+<script>
+    function showAllOportunidades(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+
+        // Mostra todas as tarefas
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            card.style.display = 'flex';
+        });
+    }
+
+    function showMinhasOportunidades(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+
+        // Esconde todas as tarefas
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            card.style.display = 'none';
+        });
+
+        // Mostra apenas as tarefas do usuário atual
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            if (card.querySelector('.usuario-id').value == '{{ request.user.id }}') {
+                card.style.display = 'flex';
+            }
+        });
+    }
+</script>
+
+{% endblock %}
