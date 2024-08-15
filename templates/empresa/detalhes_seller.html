@@ -4,228 +4,267 @@
 
 {% block conteudo %}
 <div class="container">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">{{ nome_pagina }}</h1>
-    </div>
 
-    <div class="card shadow mb-4">        
+    <div class="card shadow">        
         <div class="card-body">
-            <h4 class="mb-3 text-primary">
+            <h4 class="mt-5 text-primary">
                 Detalhes do Seller
             </h4>
-            
-            
-    <form>
-        <!-- Linha 1 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Nome da Empresa</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.empresa }}" disabled>
+            <div class="mr-1 text-end">
+                <a href="{% url 'empresa_update' detalhes_empresa.id %}" class="btn text-primary" type="button">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span class="text">Editar Seller</span>
+                </a>
             </div>
 
-            <div class="form-group col-md-6">
-                <label>CNPJ:</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.cnpj }}" disabled>
+            <form>
+                <!-- Linha 1 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Nome da Empresa</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.empresa }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>CNPJ:</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.cnpj }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 2 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Endereço</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.endereco }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Bairro</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.bairro }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 3 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Cidade</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.cidade }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Estado</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.estado }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 4 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>E-mail</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.email }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Telefone</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.telefone }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 5 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Segmento</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.segmento }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Classificação</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.classificacao }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 6 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Banco</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.banco }}" disabled>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Agência</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.agencia }}" disabled>
+                    </div>
+                </div>
+
+                <!-- Linha 7 -->
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Conta</label>
+                        <input type="text" class="form-control" value="{{ detalhes_empresa.conta }}" disabled>
+                    </div>
+                </div>
+            </form> <!-- Fechando a tag <form> -->
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h4 class="mt-4 text-primary">
+                    Histórico de Negócios
+                </h4>
+                <div class="mr-1 text-end">
+                    <a href="{% url 'oportunidade_create' %}" class="btn text-primary" type="button">
+                        <span class="text">+ Novo Negócio</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Linha 2 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Endereço</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.endereco }}" disabled>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label>Bairro</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.bairro }}" disabled>
-            </div>
-        </div>
-
-        <!-- Linha 3 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Cidade</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.cidade }}" disabled>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label>Estado</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.estado }}" disabled>
-            </div>
-        </div>
-
-        <!-- Linha 4 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>E-mail</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.email }}" disabled>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label>Telefone</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.telefone }}" disabled>
-            </div>
-        </div>
-
-        <!-- Linha 5 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Segmento</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.segmento }}" disabled>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label>Classificação</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.classificacao }}" disabled>
-            </div>
-        </div>
-
-        <!-- Linha 6 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Banco</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.banco }}" disabled>
-            </div>
-
-            <div class="form-group col-md-6">
-                <label>Agência</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.agencia }}" disabled>
-            </div>
-        </div>
-
-        <!-- Linha 7 -->
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Conta</label>
-                <input type="text" class="form-control" value="{{ detalhes_empresa.conta }}" disabled>
-            </div>
-        </div>
-
-        <div class="mr-1 text-end">
-            <a href="#" class="btn btn-primary text-white" type="button">
-                <span class="text">Editar Seller</span>
-            </a>
-        </div>
-    </form>
-
-            <h4 class="mt-4 mb-3 text-primary">
-                Histórico de Oportunidades
-            </h4>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
+        <div class="table-responsive p-2">
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th class="bg-primary text-white">Negócio</th>
+                        <th class="bg-primary text-white">Cliente</th>
+                        <th class="bg-primary text-white">Status</th>
+                        <th class="bg-primary text-white">Probabilidade <strong>%</strong></th>
+                        <th class="bg-primary text-white">Comissão <strong>%</strong></th>
+                        <th class="bg-primary text-white">Vendedor</th>
+                        <th class="bg-primary text-white">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oportunidade in detalhes_oportunidade %}
                         <tr>
-                            <th class="bg-primary text-white">Atividade</th>
-                            <th class="bg-primary text-white">Seller</th>
-                            <th class="bg-primary text-white">Status</th>
-                            <th class="bg-primary text-white">Probabilidade <strong>%</strong></th>
-                            <th class="bg-primary text-white">Comissão <strong>%</strong></th>
-                            <th class="bg-primary text-white">Vendedor</th>
-                            <th class="bg-primary text-white">Ação</th>
+                            <td>{{ oportunidade.titulo }}</td>
+                            <td>{{ oportunidade.empresa }}</td>
+                            <td>{{ oportunidade.status_negociacao }}</td>
+                            <td>{{ oportunidade.probabilidade}}</td>
+                            <td>{{ oportunidade.taxa_comissao }}</td>
+                            <td>{{ oportunidade.usuario }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Ações
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'editar_oportunidade' oportunidade.id %}">Editar</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Detalhes</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">Excluir</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for oportunidade in detalhes_oportunidade %}
-                            <tr>
-                                <td>{{ oportunidade.titulo }}</td>
-                                <td>{{ oportunidade.empresa }}</td>
-                                <td>{{ oportunidade.status_negociacao }}</td>
-                                <td>{{ oportunidade.probabilidade}}</td>
-                                <td>{{ oportunidade.taxa_comissao }}</td>
-                                <td>{{ oportunidade.vendedor }}</td>
-                                
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Ações
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="#">Editar</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="#">Detalhes</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger" href="#">Excluir</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            
+                    {% endfor %}
+                </tbody>
+            </table>
 
-            <h4 class="mt-4 mb-3 text-primary">
-                Histórico de Tarefas
-            </h4>
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
+            <div class="d-flex justify-content-between align-items-center mt-3 p-3">
+                <h4 class="mt-4 text-primary">
+                    Lista de contatos
+                </h4>
+                <div class="mr-1 text-end">
+                    <a href="{% url 'create_contato' %}" class="btn text-primary" type="button">
+                        <span class="text">+ Novo Contato</span>
+                    </a>
+                </div>
+            </div>
+        
+            <div class="table-responsive p-2">
+                <table class="table table-bordered text-center" >
                     <thead>
                         <tr>
-                            <th class="bg-primary text-white">Atividade</th>
-                            <th class="bg-primary text-white">Contato</th>
+                            <th class="bg-primary text-white">Nome</th>
+                            <th class="bg-primary text-white">Negócio</th>
                             <th class="bg-primary text-white" style="width: 160px;">Telefone</th>
                             <th class="bg-primary text-white">E-mail</th>
-                            <th class="bg-primary text-white" style="width: 320px;">Descrição</th>
-                            <th class="bg-primary text-white">data</th>
-                            <th class="bg-primary text-white">Ação</th>
+                            <th class="bg-primary text-white" style="width: 320px;">Cargo</th>
+                            <th class="bg-primary text-white">Responsável</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for tarefa in detalhes_tarefas %}
+                        {% for contato in detalhes_contato %}
                             <tr>
-                                <td>{{ tarefa.atividade }}</td>
-                                <td>{{ tarefa.contato }}</td>
-                                <td>{{ tarefa.telefone }}</td>
-                                <td>{{ tarefa.email}}</td>
-                                <td>{{ tarefa.descricao }}</td>
-                                <td>{{ tarefa.data }}</td>
-                                
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Ações
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="#">Editar</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="#">Detalhes</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger" href="#">Excluir</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <td>{{ contato.nome }}</td>
+                                <td>{{ contato.negocio }}</td>
+                                <td>{{ contato.telefone }}</td>
+                                <td>{{ contato.email}}</td>
+                                <td>{{ contato.cargo }}</td>
+                                <td>{{ contato.responsavel }}
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
-
-            
-            
-
-            <!--<p class="mr-2 mt-5 mb-4 text-right">
-                <small>
-                    Empresa cadastrada em {{ empresa.horario_cadastro }} por {{ empresa.registrado_por }}
-                </small>
-            </p> -->
+            </div> 
         
-            <div class="mr-1 text-end mt-4">
-                <a href="{% url 'list_empresas' %}" class="btn btn-primary text-white" type="button">
-                    <span class="text">Voltar para lista</span>
+
+        <div class="d-flex justify-content-between align-items-center mt-3 p-3">
+            <h4 class="mt-4 text-primary">
+                Histórico de Tarefas
+            </h4>
+            <div class="mr-1 text-end">
+                <a href="{% url 'tarefa_create' %}" class="btn text-primary" type="button">
+                    <span class="text">+ Nova tarefa</span>
                 </a>
             </div>
         </div>
+
+        
+        <div class="table-responsive p-2">
+            <table class="table table-bordered text-center" >
+                <thead>
+                    <tr>
+                        <th class="bg-primary text-white">Atividade</th>
+                        <th class="bg-primary text-white">Contato</th>
+                        <th class="bg-primary text-white" style="width: 160px;">Telefone</th>
+                        <th class="bg-primary text-white">E-mail</th>
+                        <th class="bg-primary text-white" style="width: 320px;">Descrição</th>
+                        <th class="bg-primary text-white">Data</th>
+                        <th class="bg-primary text-white">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tarefa in detalhes_tarefas %}
+                        <tr>
+                            <td>{{ tarefa.atividade }}</td>
+                            <td>{{ tarefa.contato }}</td>
+                            <td>{{ tarefa.telefone }}</td>
+                            <td>{{ tarefa.email}}</td>
+                            <td>{{ tarefa.descricao }}</td>
+                            <td>{{ tarefa.data }}</td>
+                            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Ações
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'tarefa_update' tarefa.id %}">Editar</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Detalhes</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">Excluir</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end" style="margin: 40px;">
+                <a href="{% url 'list_empresas' %}" class="btn btn-secondary text-white mb-5" type="button">
+                    <span class="text">Voltar para lista</span>
+                </a>
+            </div>
+        </div> 
     </div>
 </div>
 {% endblock %}

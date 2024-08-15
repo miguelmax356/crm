@@ -192,8 +192,8 @@ Circles.create({
 //Notify
 $.notify({
 	icon: 'icon-bell',
-	title: 'Kaiadmin',
-	message: 'Premium Bootstrap 5 Admin Dashboard',
+	title: 'Maxadmin',
+	message: 'Seja bem-vindo(a) ao CRM MAXADMIN',
 },{
 	type: 'secondary',
 	placement: {
@@ -215,49 +215,45 @@ var world_map = new jsVectorMap({
 	},
 	markers: [
 		{
-			name: 'Indonesia',
-			coords: [-6.229728, 106.6894311],
+			name: 'Alagoas',
+			coords: [-9.71, -35.73],
 			style: {
 				fill: '#435ebe'
 			}
 		},
 		{
-			name: 'United States',
-			coords: [38.8936708, -77.1546604],
+			name: 'Bahia',
+			coords: [-12.96, -38.51],
 			style: {
 				fill: '#28ab55'
 			}
 		},
 		{
-			name: 'Russia',
-			coords: [55.5807481, 36.825129],
+			name: 'Ceará',
+			coords: [-3.71, -38.54],
 			style: {
 				fill: '#f3616d'
 			}
 		},
 		{
-			name: 'China',
-			coords: [39.9385466, 116.1172735]
+			name: 'Maranhão',
+			coords: [-2.55, -44.30]
 		},
 		{
-			name: 'United Kingdom',
-			coords: [51.5285582, -0.2416812]
+			name: 'Paraíba',
+			coords: [-5.53, -52.29]
 		},
 		{
-			name: 'India',
-			coords: [26.8851417, 75.6504721]
+			name: 'Pernambuco',
+			coords: [-8.28, -35.07]
 		},
 		{
-			name: 'Australia',
-			coords: [-35.2813046, 149.124822]
+			name: 'Piauí',
+			coords: [-8.28, -43.68]
 		},
 		{
-			name: 'Brazil',
-			coords: [-22.9140693, -43.5860681]
-		},
-		{
-			name: 'Egypt',
-			coords: [26.834955, 26.3823725]
+			name: 'Sergipe',
+			coords: [-10.90, -37.07]
 		},
 	],
 	onRegionTooltipShow(event, tooltip) {

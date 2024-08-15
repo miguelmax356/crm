@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Header</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #0f1344;
+    color: #fff;
+    padding: 15px 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav {
+    flex-grow: 1;
+    text-align: right;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.menu li {
+    margin-left: 20px;
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.menu a:hover {
+    background-color: #0f1344;
+    border-radius: 5px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    nav {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .menu {
+        flex-direction: column;
+        align-items: center;
+    }
+    .menu li {
+        margin-left: 0;
+        margin-bottom: 10px;
+    }
+}
+.container-fluid {
+        padding: 0;
+        margin: 0;
+        
+    }
+
+
+    .calendar {
+        width: 70%;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-left: 10px;
+    }
+    .calendar-header {
+        background-color: #435ebe;
+        color: #fff;
+        text-align: center;
+        padding: 2px;
+        font-size: 1.5em;
+    }
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .calendar-table th,
+    .calendar-table td {
+        border: 1px solid #ccc;
+        padding: 56px;
+        text-align: center;
+    }
+    .calendar-table th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+    .calendar-table td {
+        font-size: 1.2em;
+    }
+    .calendar-table td.today {
+        background-color: #f7f7f7;
+        font-weight: bold;
+    }
+    .calendar-table td:hover {
+        background-color: #f0f0f0;
+    }
+    .side-calendar {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        width: 25%;
+        margin-left: 40px;
+
+    }
+    .sidebar-button {
+        display: block;
+        background-color: #435ebe;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 30px;
+        margin-top: 100px;
+        border-radius: 4px;
+    }
+    .mini-calendar {
+        /* Estilos para o mini calendário */
+        text-align: center;
+        font-size: 0.9em;
+    }
+
+</style>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Minha Empresa</div>
+            <nav>
+                <ul class="menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Serviços</a></li>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#portfolio">Portfólio</a></li>
+                    <li><a href="#team">Equipe</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#contact">Contato</a></li>
+                    <li><a href="#support">Suporte</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container-fluid"  style="margin-top: 80px; margin-bottom: 30px";>
+        <div class="align-items-center justify-content-start">
+            <div class="row">
+                <div class="side-calendar">
+                    <a href="#" class="sidebar-button">Novo Agendamento</a>
+                    <div class="mini-calendar">
+                    <!-- Conteúdo do calendário menor -->
+                     
+                    Mini Calendário Aqui
+                    </div>
+            </div>
+            <!-- Coluna para o calendário -->
+            
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button id="prev-month">Mês Anterior</button>
+                        <span id="current-month-year"></span>
+                        <button id="next-month">Próximo Mês</button>
+                    </div>
+                    <table class="calendar-table" id="calendar-table">
+                        <!-- Tabela do calendário gerada dinamicamente -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarTable = document.getElementById('calendar-table');
+        const currentMonthYear = document.getElementById('current-month-year');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+
+        let currentDate = new Date(); // Data atual
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Função para gerar o calendário com base no mês e ano
+        function generateCalendar(month, year) {
+            // Limpa o conteúdo da tabela
+            calendarTable.innerHTML = '';
+
+            // Define o cabeçalho do calendário com o mês e ano atual
+            currentMonthYear.textContent = `${getMonthName(month)} ${year}`;
+
+            // Obtém o número de dias no mês e o dia da semana do primeiro dia do mês
+            let daysInMonth = new Date(year, month + 1, 0).getDate();
+            let firstDayOfMonth = new Date(year, month, 1).getDay();
+
+            // Cria as linhas e colunas da tabela do calendário
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = calendarTable.insertRow();
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDayOfMonth) {
+                        // Células vazias antes do primeiro dia do mês
+                        let cell = row.insertCell();
+                        cell.textContent = '';
+                    } else if (date > daysInMonth) {
+                        // Células vazias após o último dia do mês
+                        break;
+                    } else {
+                        // Células com números de dia
+                        let cell = row.insertCell();
+                        cell.textContent = date;
+                        date++;
+                    }
+                }
+            }
+        }
+
+        // Função para obter o nome do mês com base no índice
+        function getMonthName(month) {
+            const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return months[month];
+        }
+
+        // Event listeners para os botões de mudança de mês
+        prevMonthButton.addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        nextMonthButton.addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        // Gera o calendário inicial ao carregar a página
+        generateCalendar(currentMonth, currentYear);
+    });
+</script>
+</html>

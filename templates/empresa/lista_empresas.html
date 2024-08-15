@@ -2,80 +2,125 @@
 
 {% block conteudo %}
 
-<div class="container-fluid mt-7">
-    <div class="d-sm-flex align-items-center justify-content-end mb-3" style="margin-top: 80px;">
-        <a href="{% url 'empresa_create' %}" class="btn btn-primary btn-icon-split btn-sm mt-3">
-            <span class="text">Adicionar Seller</span>
-            <span class="icon text-white-50">
-                <i class="fas fa-user-plus"></i>
-            </span>
-        </a>
+<style>
+    span.text {
+        font-weight: normal;
+        font-size: 1.1rem;
+        color: #ffffff;
+        border: rgba(35, 22, 220, 0.769);
+    }
 
-        <a href="{% url 'index' %}" class="btn btn-secondary btn-sm mt-3" style="margin-left: 20px;">
-            <span class="text">Voltar para home</span>
-        </a>
-    </div>
+</style>
 
-
-
-    <div class="card-body">
-        <h4 class="mb-3 text-primary">
-            Sellers Cadastrados
-        </h4>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="card shadow mb-4" >       
-        <div class="table-responsive" style="border-radius: 20px;">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="bg-primary text-white">Nome Seller</th>
-                        <th class="bg-primary text-white">Segmento</th>
-                        <th class="bg-primary text-white">E-mail</th>
-                        <th class="bg-primary text-white">Telefone</th>
-                        <th class="bg-primary text-white">Responsável</th>
-                        <th class="bg-primary text-white">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for empresa in todas_empresas %}
-                        <tr>
-                            <td><a href="{% url 'detalhes_empresas' empresa.id %}" style="font-weight: bolder;">{{ empresa.empresa }}</a></td>
-                            <td>{{ empresa.segmento }}</td>
-                            <td>{{ empresa.email }}</td>
-                            <td>{{ empresa.telefone }}</td>
-                            <td>{{ empresa.responsavel }}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Ações
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'empresa_update' empresa.id %}">Editar</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'detalhes_empresas' empresa.id %}">Detalhes</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="{% url 'empresa_delete' empresa.id %}">Excluir</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgb(24, 83, 247); padding: 5px; margin: 100px 100px 40px; width: 70%; border-radius: 15px;">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-end w-100">
+            <a href="{% url 'empresa_create' %}" class="btn btn-icon-split btn-sm open-popup" data-popup-url="{% url 'empresa_create' %}">
+                <span class="text">Novo Seller</span>
+            </a>
+            <a href="#" onclick="showMeusSellers(event)" class="btn btn-sm" style="margin-left: 20px;" >
+                <span class="text">Meus Sellers</span>
+            </a>
+            <a href="#" onclick="showAllSellers(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Todos Sellers</span>
+            </a>
+            <a href="{% url 'kanban_oportunidade' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Negócios</span>
+            </a>
+            <a href="{% url 'kanban' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Tarefas</span>
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-sm" style="margin-left: 20px;" data-popup-url="{% url 'index' %}">
+                <span class="text">Voltar para home</span>
+            </a>
         </div>
     </div>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mt-3 p-3">
+    <h4 class="mt-4 text-primary">
+        Sellers Cadastrados
+    </h4>
 </div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card shadow mb-4" id="card{{ empresa.vendedor.id }}">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="bg-primary text-white">Nome Seller</th>
+                    <th class="bg-primary text-white">Segmento</th>
+                    <th class="bg-primary text-white">E-mail</th>
+                    <th class="bg-primary text-white">Telefone</th>
+                    <th class="bg-primary text-white">Vendedor</th>
+                    <th class="bg-primary text-white">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="empresa-table-body">
+                {% for empresa in todas_empresas %}
+                    <tr class="empresa-row" data-vendedor-id="{{ empresa.vendedor.id }}">
+                        <td><a href="{% url 'detalhes_empresas' empresa.id %}" style="font-weight: bolder;">{{ empresa.empresa }}</a></td>
+                        <td>{{ empresa.segmento }}</td>
+                        <td>{{ empresa.email }}</td>
+                        <td>{{ empresa.telefone }}</td>
+                        <td>{{ empresa.vendedor }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Ações
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'empresa_update' empresa.id %}">Editar</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'detalhes_empresas' empresa.id %}">Detalhes</a>
+                                    </li>
+                                    <!-- Se precisar visualizar o botao de excluir, remova esse comentario
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{% url 'empresa_delete' empresa.id %}">Excluir</a>
+                                    </li>
+                                -->
+                                </ul>
+                            </div>
+                        </td>
+                        <input type="hidden" class="usuario-id" value="{{ empresa.vendedor.id }}">
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function showAllSellers(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+        const rows = document.querySelectorAll('.empresa-row');
+        rows.forEach(row => {
+            row.style.display = 'table-row';
+        });
+    }
+
+    function showMeusSellers(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+        const userId = '{{ request.user.id }}';
+        const rows = document.querySelectorAll('.empresa-row');
+        rows.forEach(row => {
+            if (row.dataset.vendedorId === userId) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
 
 {% endblock conteudo %}

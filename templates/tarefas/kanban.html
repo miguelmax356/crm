@@ -126,9 +126,10 @@ style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px
             <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <div>
                     <strong>{{ tarefa.atividade }}</strong><br>
-                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <a href="{% url 'editar_oportunidade' tarefa.id %}">{{ tarefa.oportunidade }}</a>
                     <p class="mt-3">{{ tarefa.contato }}</p>
                     <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ tarefa.data_inicio|date:"d/m/y" }}</p>
                 </div>
                 <!-- Ícones e Foto -->
                 <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
@@ -160,9 +161,10 @@ style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px
             <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <div>
                     <strong>{{ tarefa.atividade }}</strong><br>
-                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <a href="{% url 'editar_oportunidade' tarefa.id %}">{{ tarefa.oportunidade }}</a>
                     <p class="mt-3">{{ tarefa.contato }}</p>
                     <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ tarefa.data_inicio|date:"d/m/y" }}</p>
                 </div>
                 <!-- Ícones e Foto -->
                 <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
@@ -194,9 +196,10 @@ style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px
             <div class="kanban-card" id="card{{ tarefa.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <div>
                     <strong>{{ tarefa.atividade }}</strong><br>
-                    <a href="{% url 'editar_oportunidade' tarefa.oportunidade.id %}">{{ tarefa.oportunidade }}</a>
+                    <a href="{% url 'editar_oportunidade' tarefa.id %}">{{ tarefa.oportunidade }}</a>
                     <p class="mt-3">{{ tarefa.contato }}</p>
                     <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ tarefa.status }}</strong></p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ tarefa.data_inicio|date:"d/m/y" }}</p>
                 </div>
                 <!-- Ícones e Foto -->
                 <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
@@ -354,4 +357,5 @@ style="background-color: rgba(0, 0, 0, 0.113); padding: 5px; margin: 100px 100px
         });
     }
 </script>
+    
 {% endblock conteudo %}

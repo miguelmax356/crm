@@ -10,7 +10,7 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <h4 class="mb-3 text-primary">
-                Editar Oportunidade
+                Editar Negócio
             </h4>
 
             {% if mensagem %}
@@ -62,7 +62,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div class="d-flex justify-content-right mt-4">
+                <div class="d-flex justify-content-end mt-4">
                     <button class="btn btn-primary mr-2" type="submit">
                         <span class="text">Salvar dados</span>
                     </button>
@@ -73,5 +73,107 @@
             </form>
         </div>
     </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3 p-3">
+        <h4 class="mt-4 text-primary">
+            Lista de contatos
+        </h4>
+        <div class="mr-1 text-end">
+            <a href="{% url 'create_contato' %}" class="btn text-primary" type="button">
+                <span class="text">+ Novo Contato</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive p-2">
+        <table class="table table-bordered text-center" >
+            <thead>
+                <tr>
+                    <th class="bg-primary text-white">Nome</th>
+                    <th class="bg-primary text-white">Negócio</th>
+                    <th class="bg-primary text-white" style="width: 160px;">Telefone</th>
+                    <th class="bg-primary text-white">E-mail</th>
+                    <th class="bg-primary text-white" style="width: 320px;">Cargo</th>
+                    <th class="bg-primary text-white">Responsável</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contato in contatos %}
+                    <tr>
+                        <td>{{ contato.nome }}</td>
+                        <td>{{ contato.negocio }}</td>
+                        <td>{{ contato.telefone }}</td>
+                        <td>{{ contato.email}}</td>
+                        <td>{{ contato.cargo }}</td>
+                        <td>{{ contato.responsavel }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+
+    <div class="d-flex justify-content-between align-items-center mt-3 p-3">
+        <h4 class="mt-4 text-primary">
+            Histórico de Tarefas
+        </h4>
+        <div class="mr-1 text-end">
+            <a href="{% url 'tarefa_create' %}" class="btn text-primary" type="button">
+                <span class="text">+ Nova tarefa</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive p-2">
+        <table class="table table-bordered text-center" >
+            <thead>
+                <tr>
+                    <th class="bg-primary text-white">Atividade</th>
+                    <th class="bg-primary text-white">Contato</th>
+                    <th class="bg-primary text-white" style="width: 160px;">Telefone</th>
+                    <th class="bg-primary text-white">E-mail</th>
+                    <th class="bg-primary text-white" style="width: 320px;">Descrição</th>
+                    <th class="bg-primary text-white">Data</th>
+                    <th class="bg-primary text-white">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarefa in tarefas %}
+                    <tr>
+                        <td>{{ tarefa.atividade }}</td>
+                        <td>{{ tarefa.contato }}</td>
+                        <td>{{ tarefa.telefone }}</td>
+                        <td>{{ tarefa.email}}</td>
+                        <td>{{ tarefa.descricao }}</td>
+                        <td>{{ tarefa.data_inicio }}</td>
+                        
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Ações
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'tarefa_update' tarefa.id %}">Editar</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Detalhes</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#">Excluir</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-end" style="margin: 40px;">
+            <a href="{% url 'list_empresas' %}" class="btn btn-secondary text-white mb-5" type="button">
+                <span class="text">Voltar para lista</span>
+            </a>
+        </div>
+    </div> 
 </div>
 {% endblock %}

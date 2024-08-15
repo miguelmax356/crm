@@ -1,12 +1,13 @@
 from django.db import models
-from contatos.models import Contato
 from usuarios.models import Usuario
+
+
 
 class Empresa(models.Model):
     RELEVANCIA = [
-        ('bronze', 'Bronze'),
-        ('prata', 'Prata'),
-        ('ouro', 'Ouro'),
+        ('Bronze', 'Bronze'),
+        ('Prata', 'Prata'),
+        ('Ouro', 'Ouro'),
     ]
 
     ESTADOS = [
@@ -52,18 +53,18 @@ class Empresa(models.Model):
 
     vendedor = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="responsavel")
     empresa = models.CharField(max_length=300, blank=True)
-    cnpj = models.CharField(max_length=14)
-    endereco = models.CharField(max_length=300, blank=True)
-    bairro = models.CharField(max_length=100)
-    cidade = models.CharField(max_length=100)
-    estado = models.CharField(max_length=2, choices=ESTADOS)
-    telefone = models.CharField(max_length=11)
-    classificacao = models.CharField(max_length=6, choices=RELEVANCIA)
-    segmento = models.CharField(max_length=20, choices=SEGMENTOS)
-    email = models.EmailField()
-    banco = models.CharField(verbose_name="Banco", max_length=20, choices=BANCOS, blank=True)
-    agencia = models.CharField(max_length=5, blank=True)
-    conta = models.CharField(max_length=20, blank=True)
+    cnpj = models.CharField(max_length=14, blank=True, null=True)
+    endereco = models.CharField(max_length=300, blank=True, null=True)
+    bairro = models.CharField(max_length=100, blank=True, null=True)
+    cidade = models.CharField(max_length=100, blank=True, null=True)
+    estado = models.CharField(max_length=2, choices=ESTADOS, blank=True, null=True)
+    telefone = models.CharField(max_length=11, blank=True, null=True)
+    classificacao = models.CharField(max_length=6, choices=RELEVANCIA, blank=True, null=True)
+    segmento = models.CharField(max_length=20, choices=SEGMENTOS, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    banco = models.CharField(verbose_name="Banco", max_length=20, choices=BANCOS, blank=True, null=True)
+    agencia = models.CharField(max_length=5, blank=True, null=True)
+    conta = models.CharField(max_length=20, blank=True, null=True)
 
 
     class Meta:
@@ -86,13 +87,13 @@ class Oportunidade(models.Model):
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="oportunidades")
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="vendas")
     titulo = models.CharField(max_length=200)
-    taxa_comissao = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Taxa de Comissão")
-    status_negociacao = models.CharField(max_length=30, verbose_name="Status da Oportunidade", choices=STATUS)
+    taxa_comissao = models.DecimalField(max_digits=4, decimal_places=2, verbose_name="Taxa de Comissão")
+    status_negociacao = models.CharField(max_length=30, verbose_name="Status do Negócio", choices=STATUS)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_fechamento = models.DateTimeField(verbose_name="Data de fechamento")
-    probabilidade = models.DecimalField(max_digits=3, decimal_places=2, verbose_name="Probabilidade")
+    probabilidade = models.DecimalField(max_digits=3, decimal_places=0, verbose_name="Probabilidade")
     arquivo = models.FileField(upload_to="Termos de parceria/", null=True, blank=True)
-    contato = models.ForeignKey(Contato, on_delete=models.CASCADE, related_name="contato", blank=True)
+
 
     class Meta:
         verbose_name = "Oportunidade"
@@ -108,25 +109,32 @@ class Tarefa(models.Model):
         ('Ligacao', 'Ligação'),
         ('Email', 'E-mail'),
         ('Visita', 'Visita'),
-        ('Online', 'Online')
+        ('Reunião Online', 'Reunião Online'),
+        ('Whatsapp', 'Whatsapp'),
     ]
 
     STATUS_TAREFA = [
-        ('Nova', 'Nova'),
-        ('Em andamento', 'Em andamento'),
+        ('Prospecção', 'Prospecção'),
+        ('Aguardando Apresentação', 'Aguardando Apresentação'),
+        ('Aguardando Reunião', 'Aguardando Reunião'),
+        ('Em negociação', 'Em negociação'),
         ('Concluida', 'Concluída'),
     ]
 
-    oportunidade = models.ForeignKey(Oportunidade, on_delete=models.CASCADE, related_name="tarefas")
+    contato = models.ForeignKey('contatos.Contato', on_delete=models.CASCADE)
+    negocio = models.ForeignKey(Oportunidade, on_delete=models.CASCADE, related_name="tarefas")
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, blank=True, related_name="empresa_tarefa")
-    atividade = models.CharField(max_length=7, choices=TIPO_TAREFA)
-    contato = models.ForeignKey(Contato, on_delete=models.CASCADE, related_name="contatos")
+    atividade = models.CharField(max_length=14, choices=TIPO_TAREFA)
     telefone = models.CharField(max_length=11)
     email = models.EmailField(blank=True)
     descricao = models.CharField(max_length=300)
-    status = models.CharField(max_length=13, blank=True, choices=STATUS_TAREFA)
-    data = models.DateTimeField(verbose_name="Criação da tarefa", auto_now_add=True)
+    status = models.CharField(max_length=23, blank=True, choices=STATUS_TAREFA)
+    data_inicio = models.DateField(blank=True, null=True)
+    horario_inicio = models.TimeField(blank=True, null=True)
+    data_fim = models.DateTimeField(blank=True, null=True)
+    horario_fim = models.TimeField(blank=True, null=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="tarefas")
+
 
     class Meta:
         verbose_name = "Tarefa"
@@ -139,23 +147,25 @@ class Tarefa(models.Model):
 
 class Lead(models.Model):
     RELEVANCIA = [
-        ('bronze', 'Bronze'),
-        ('prata', 'Prata'),
-        ('ouro', 'Ouro'),
+        ('Bronze', 'Bronze'),
+        ('Prata', 'Prata'),
+        ('Ouro', 'Ouro'),
     ]
 
     SEGMENTOS = [
-        ('Móveis & Eletro', 'Móveis & Eletro'),
-        ('Supermercado', 'Supermercado'),
-        ('Petshop', 'Petshop'),
+        ('Artigos Religiosos', 'Artigos Religiosos'),
         ('Automotivo', 'Automotivo'),
-        ('Vestuário', 'Vestuário'),
-        ('Cosmético', 'Cosméticos'),
-        ('Brinquedo', 'Brinquedo'),
-        ('Smartphone', 'Smartphone'),
-        ('Home Center', 'Home Center'),
         ('Baby', 'Baby'),
+        ('Brinquedo', 'Brinquedo'),
+        ('Cosmético', 'Cosméticos'),
+        ('Home Center', 'Home Center'),
+        ('Itens Esportivos', 'Itens Esportivos'),
+        ('Móveis & Eletro', 'Móveis & Eletro'),
         ('Papelaria', 'Papelaria'),
+        ('Petshop', 'Petshop'),
+        ('Smartphone', 'Smartphone'),
+        ('Supermercado', 'Supermercado'),
+        ('Vestuário', 'Vestuário'),
     ]
 
     nome_empresa = models.CharField(verbose_name="Empresa", max_length=194)

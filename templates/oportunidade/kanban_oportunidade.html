@@ -39,18 +39,23 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+
     }
-    .icons-profile > div {
+    .icon-container {
         display: flex;
         margin-bottom: 10px;
     }
+    .icon-container a {
+        margin-right: 10px;
+    }
     .icons-profile img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
+        margin-top: 60px;
     }
     span.text {
-        font-weight:normal;
+        font-weight: normal;
         font-size: 1.1rem;
         color: #000000;
         border: rgb(35, 22, 220);
@@ -85,29 +90,43 @@
         </div>
         {% for oportunidade in oportunidades %}
             {% if oportunidade.status_negociacao == 'em negociacao' %}
-                <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <div>
-                        <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
-                        <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
-                        <p class="mt-3">{{ oportunidade.contato }}</p>
-                        <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
-                    </div>
-                    <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
-                        <div style="display: flex; margin-bottom: 10px;">
-                            <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
-                            <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
-                            <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
-                        </div>
-                        {% if oportunidade.usuario.foto_perfil %}
-                            <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+            <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                    <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                    <p class="mt-3">{{ oportunidade.contato }}</p>
+                    <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                    <p>Probabilidade:</p>
+                    <div class="progress mb-3">
+                        {% if oportunidade.probabilidade < 50 %}
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        {% elif oportunidade.probabilidade >= 50 and oportunidade.probabilidade < 70 %}
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        {% else %}
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
                         {% endif %}
                     </div>
-                    <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
-                    <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
                 </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+                <div class="icons-profile">
+                    <div class="icon-container">
+                        <a href="tel:seu-numero-de-telefone"><i class="fas fa-phone"></i></a>
+                    </div>
+                    <div class="icon-container">
+                        <a href="mailto:seu-email@example.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                    <div class="icon-container">
+                        <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                    </div>
+                    {% if oportunidade.usuario.foto_perfil %}
+                        <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil">
+                    {% endif %}
+                </div>
+                <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
 
     <div class="kanban-column" id="in-progress">
         <div class="titulo col-15 p-2 bg-success mb-4">
@@ -115,30 +134,43 @@
         </div>
         {% for oportunidade in oportunidades %}
             {% if oportunidade.status_negociacao == 'ganha' %}
-                <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <div>
-                        <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
-                        <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
-                        <p class="mt-3">{{ oportunidade.contato }}</p>
-                        <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
-                    </div>
-                    <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
-                        <div style="display: flex; margin-bottom: 10px;">
-                            <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
-                            <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
-                            <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
-                        </div>
-                        {% if oportunidade.usuario.foto_perfil %}
-                            <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+            <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                    <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                    <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                    <p class="mt-3">{{ oportunidade.contato }}</p>
+                    <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                    <p>Probabilidade:</p>
+                    <div class="progress mb-3">
+                        {% if oportunidade.probabilidade < 50 %}
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        {% elif oportunidade.probabilidade >= 50 and oportunidade.probabilidade < 70 %}
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        {% else %}
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
                         {% endif %}
                     </div>
-                    <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
-                    <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
-
                 </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+                <div class="icons-profile">
+                    <div class="icon-container">
+                        <a href="tel:seu-numero-de-telefone"><i class="fas fa-phone"></i></a>
+                    </div>
+                    <div class="icon-container">
+                        <a href="mailto:seu-email@example.com"><i class="fas fa-envelope"></i></a>
+                    </div>
+                    <div class="icon-container">
+                        <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                    </div>
+                    {% if oportunidade.usuario.foto_perfil %}
+                        <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil">
+                    {% endif %}
+                </div>
+                <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
 
     <div class="kanban-column" id="done">
         <div class="titulo col-15 p-2 bg-danger mb-4 text-center">
@@ -147,31 +179,47 @@
         <div style="display: flex; flex-direction: column;">
             {% for oportunidade in oportunidades %}
                 {% if oportunidade.status_negociacao == 'perdida' %}
-                    <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <div>
-                            <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
-                            <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
-                            <p class="mt-3">{{ oportunidade.contato }}</p>
-                            <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
-                        </div>
-                        <div class="icons-profile" style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="display: flex; margin-bottom: 10px;">
-                                <a href="tel:seu-numero-de-telefone" style="margin-right: 10px;"><i class="fas fa-phone"></i></a>
-                                <a href="mailto:seu-email@example.com" style="margin-right: 10px;"><i class="fas fa-envelope"></i></a>
-                                <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
-                            </div>
-                            {% if oportunidade.usuario.foto_perfil %}
-                                <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil" style="width: 40px; height: 40px; border-radius: 50%; margin-top: 70px;">
+                <div class="kanban-card" id="card{{ oportunidade.id }}" draggable="true" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <strong class="text-danger">{{ oportunidade.titulo }}</strong><br>
+                        <a href="{% url 'editar_oportunidade' oportunidade.id %}">{{ oportunidade.empresa }}</a>
+                        <p class="mt-3">{{ oportunidade.contato }}</p>
+                        <p>Status: <br><strong style="background: aquamarine; display: inline; border-radius: 7px; padding: 0.3rem;">{{ oportunidade.status_negociacao }}</strong></p>
+                        <p>Probabilidade:</p>
+                        <div class="progress mb-3">
+                            {% if oportunidade.probabilidade < 50 %}
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% elif oportunidade.probabilidade >= 50 and oportunidade.probabilidade < 70 %}
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% else %}
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ oportunidade.probabilidade }}%;" aria-valuenow="{{ oportunidade.probabilidade }}" aria-valuemin="0" aria-valuemax="100"></div>
                             {% endif %}
                         </div>
-                        <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
-                        <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
                     </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+                    <div class="icons-profile">
+                        <div class="icon-container">
+                            <a href="tel:seu-numero-de-telefone"><i class="fas fa-phone"></i></a>
+                        </div>
+                        <div class="icon-container">
+                            <a href="mailto:seu-email@example.com"><i class="fas fa-envelope"></i></a>
+                        </div>
+                        <div class="icon-container">
+                            <a href="{% url 'editar_oportunidade' oportunidade.id %}"><i class="fas fa-pencil-alt"></i></a>
+                        </div>
+                        {% if oportunidade.usuario.foto_perfil %}
+                            <img src="{{ oportunidade.usuario.foto_perfil.url }}" alt="Foto de perfil">
+                        {% endif %}
+                    </div>
+                    <input type="hidden" class="update-url" value="{% url 'update_kanban_op' oportunidade.id %}">
+                    <input type="hidden" class="usuario-id" value="{{ oportunidade.usuario.id }}">
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
     </div>
 </div>
+
+
 
 <script>
     const cards = document.querySelectorAll('.kanban-card');
@@ -304,5 +352,34 @@
         });
     }
 </script>
+
+<!-- Script para atualizacao da barra de progresso de venda-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    function updateProgressBar(value) {
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = value + '%';
+        progressBar.setAttribute('aria-valuenow', value);
+        progressBar.textContent = value + '%';
+
+        // Remove existing color classes
+        progressBar.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+
+        // Add color class based on value
+        if (value < 50) {
+            progressBar.classList.add('bg-danger');
+        } else if (value < 75) {
+            progressBar.classList.add('bg-warning');
+        } else {
+            progressBar.classList.add('bg-success');
+        }
+    }
+
+    // Example: update the progress bar to the value from {{ oportunidade.probabilidade }}
+    const initialValue = parseInt("{{ oportunidade.probabilidade }}");
+    updateProgressBar(initialValue);
+});
+</script>
+
 
 {% endblock %}

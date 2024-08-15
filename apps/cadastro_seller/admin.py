@@ -1,35 +1,38 @@
 from django.contrib import admin
 from cadastro_seller.models import Empresa, Oportunidade, Tarefa, Lead
+from .forms import TarefaForm
 
+from contatos.admin import ContatoInline
 
 
 
 class TarefaInline(admin.TabularInline):
     model = Tarefa
     extra = 0
-    fields = ('atividade','oportunidade', 'empresa', 'contato', 'telefone', 'email', 'descricao', 'status','usuario')
+    fields = ('atividade','negocio', 'empresa', 'telefone', 'email', 'descricao', 'status','usuario')
 
 
 class TarefaAdmin(admin.ModelAdmin):
-    list_display = ('atividade', 'contato', 'telefone', 'email', 'status', 'oportunidade', 'usuario')
+    list_display = ('contato', 'atividade', 'telefone', 'email', 'status', 'negocio', 'usuario')
 
 
 class OportunidadeAdmin(admin.ModelAdmin):
+    form = TarefaForm
     list_display = ('empresa', 'titulo', 'status_negociacao', 'usuario', 'probabilidade', 'taxa_comissao', 'data_fechamento')
-    inlines = [TarefaInline]
+    inlines = [TarefaInline, ContatoInline]
 
 
 class OportunidadeInline(admin.TabularInline):
     model = Oportunidade
     extra = 0
-    fields = ('titulo', 'status_negociacao', 'usuario', 'probabilidade', 'taxa_comissao', 'data_fechamento', 'arquivo', 'contato')
+    fields = ('titulo', 'status_negociacao', 'usuario', 'probabilidade', 'taxa_comissao', 'data_fechamento', 'arquivo')
 
 
 class EmpresaAdmin(admin.ModelAdmin):
     list_display = ('empresa', 'telefone', 'email', 'segmento')
     search_fields = ('empresa', 'email')
     list_filter = ('empresa', 'telefone')
-    inlines = [OportunidadeInline, TarefaInline]
+    inlines = [OportunidadeInline, TarefaInline, ContatoInline]
 
 
 @admin.action(description='Converter Lead para Empresa')

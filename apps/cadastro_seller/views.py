@@ -6,11 +6,15 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
+from django.core.serializers import serialize
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import F, Func, Value
 
 
 from .models import Empresa, Oportunidade, Tarefa, Lead
 from .forms import EmpresaForm, OportunidadeForm, TarefaForm, LeadForm
 from usuarios.models import Usuario
+from contatos.models import Contato
 
 
 # Nessa view adicionei filtro e ordenacao por titulo
@@ -45,12 +49,14 @@ def detalhes_empresas(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     oportunidade = Oportunidade.objects.filter(empresa=empresa)
     tarefa = Tarefa.objects.filter(empresa=empresa)
+    contato = Contato.objects.filter(empresa=empresa)
 
 
     context = {
         "detalhes_empresa": empresa,
         "detalhes_oportunidade": oportunidade,
-        "detalhes_tarefas": tarefa
+        "detalhes_tarefas": tarefa,
+        "detalhes_contato": contato,
     }
     return render(request, 'empresa/detalhes_seller.html', context)
 
@@ -147,20 +153,25 @@ def oportunidade_create(request):
 
 
 def oportunidade_update(request, pk):
-    oportunidade = get_object_or_404(Oportunidade, pk=pk)
+    negocio = get_object_or_404(Oportunidade, pk=pk)
+    tarefas = Tarefa.objects.filter(negocio=negocio)
+    contatos = Contato.objects.filter(negocio=negocio)
 
     if request.method == 'POST':
-        form_oportunidade = OportunidadeForm(request.POST, instance=oportunidade)
+        form_oportunidade = OportunidadeForm(request.POST, instance=negocio)
         if form_oportunidade.is_valid():
             form_oportunidade.save()
             return HttpResponseRedirect(reverse('editar_oportunidade', args=[pk]))
     else:
-        form_oportunidade = OportunidadeForm(instance=oportunidade)
+        form_oportunidade = OportunidadeForm(instance=negocio)
 
-    return render(request, 'oportunidade/editar_oportunidade.html', {
+    context = {
         'form_oportunidade': form_oportunidade,
-        'status': oportunidade.status_negociacao  # Passa o status da oportunidade para o template
-    })
+        'status': negocio.status_negociacao,
+        'tarefas': tarefas,
+        'contatos': contatos,
+    }
+    return render(request, 'oportunidade/editar_oportunidade.html', context)
 
 
 
@@ -208,6 +219,10 @@ def tarefa_update(request, pk):
         form_tarefa = TarefaForm(instance=tarefa)
 
     return render(request, 'tarefas/editar_tarefa.html', {'form_tarefa': form_tarefa})
+
+# Calendario
+
+
 
 
 # Viewa para o Kanban de Tarefas
@@ -263,3 +278,56 @@ def lead_create(request):
 
 
 
+
+
+
+'''def calendario(request):
+    eventos = Tarefa.objects.all().values('atividade', 'descricao', 'data_inicio', 'data_fim')
+    eventos_list = list(eventos)
+    return JsonResponse(eventos_list, safe=False)
+'''
+
+
+
+
+
+def eventos_json(request):
+    try:
+        eventos = (
+            Tarefa.objects.annotate(
+                horario_inicio_formatted=F('horario_inicio')
+            )
+            .values('atividade', 'contato__nome', 'data_inicio', 'data_fim', 'horario_inicio_formatted')
+        )
+        eventos_list = list(eventos)
+
+        for evento in eventos_list:
+            if evento['data_inicio']:
+                evento['data_inicio'] = evento['data_inicio'].isoformat()
+            if evento['data_fim']:
+                evento['data_fim'] = evento['data_fim'].isoformat()
+
+            # Ajustar o formato do horário para enviar apenas hora e minutos
+            horario_inicio_formatted = evento['horario_inicio_formatted']
+            if horario_inicio_formatted:
+                evento['horario_inicio'] = horario_inicio_formatted.strftime('%H:%M')
+            else:
+                evento['horario_inicio'] = None
+
+            del evento['horario_inicio_formatted']
+
+        # Imprime eventos_list no console do servidor Django
+        #print(eventos_list)
+
+        return JsonResponse(eventos_list, safe=False)
+    except Exception as e:
+        print(f"Erro ao processar a view eventos_view: {e}")
+        return JsonResponse({'error': 'Erro ao processar a solicitação'}, status=500)
+    
+    
+def eventos_view(request):
+    return render(request, 'tarefas/calendario.html')
+
+    
+
+   

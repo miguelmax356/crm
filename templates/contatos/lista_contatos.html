@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+
+{% block conteudo %}
+
+<style>
+    span.text {
+        font-weight: normal;
+        font-size: 1.1rem;
+        color: #ffffff;
+
+    }
+
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-primary" style="padding: 5px; margin: 100px 100px 40px; width: 75%; border-radius: 15px;">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center w-100">
+            <a href="{% url 'create_contato' %}" class="btn btn-icon-split btn-sm open-popup" data-popup-url="{% url 'empresa_create' %}">
+                <span class="text">Novo Contato</span>
+            </a>
+            <a href="#" onclick="showMeusSellers(event)" class="btn btn-sm" style="margin-left: 20px;" >
+                <span class="text">Meus contatos</span>
+            </a>
+            <a href="#" onclick="showAllSellers(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Todos Contatos</span>
+            </a>
+            <a href="{% url 'kanban_oportunidade' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Negócios</span>
+            </a>
+            <a href="{% url 'kanban' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Tarefas</span>
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-sm" style="margin-left: 20px;" data-popup-url="{% url 'index' %}">
+                <span class="text">Voltar para home</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="d-flex justify-content-between align-items-center mt-3 p-3">
+    <h4 class="mt-4 text-primary">
+        Lista de Contatos
+    </h4>
+</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow mb-4" style="border-radius: 20px;">
+        <div class="table-responsive" style="border-radius: 20px;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="bg-primary text-white text-center">Nome</th>
+                        <th class="bg-primary text-white text-center">E-mail</th>
+                        <th class="bg-primary text-white text-center">Telefone</th>
+                        <th class="bg-primary text-white text-center">Cargo</th>
+                        <th class="bg-primary text-white text-center">Negócio</th>
+                        <th class="bg-primary text-white text-center">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contato in contatos %}
+                        <tr>
+                            <td class="text-center"><a href="{% url 'contato_update' contato.id %}" style="font-weight: bolder;">{{ contato.nome }}</a></td>
+                            <td class="text-center">{{ contato.email }}</td>
+                            <td class="text-center">{{ contato.telefone }}</td>
+                            <td lass="text-center">{{ contato.cargo }}</td>
+                            <td class="text-center">{{ contato.empresa}}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Ações
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'contato_update' contato.id %}">Editar</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Detalhes</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">Excluir</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock conteudo %}

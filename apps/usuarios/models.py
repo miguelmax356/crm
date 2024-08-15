@@ -13,6 +13,7 @@ class UsuarioManager(BaseUserManager):
         usuario.is_active = True
         usuario.is_staff = False
         usuario.is_superuser = False
+  
 
         if password:
             usuario.set_password(password)
@@ -104,6 +105,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(verbose_name="Usuário é da equipe", default=False)
 
     is_superuser = models.BooleanField(verbose_name="Super usuário", default=False)
+
+
 
     USERNAME_FIELD = "email"
 

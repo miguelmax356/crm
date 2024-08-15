@@ -2,84 +2,107 @@
 
 {% block conteudo %}
 
-<div class="container-fluid mt-7">
-    <div class="d-sm-flex align-items-center justify-content-end mb-3" style="margin-top: 80px;">
-        <a href="{% url 'tarefa_create' %}" class="btn btn-primary btn-icon-split btn-sm mt-3">
-            <span class="text">Adicionar tarefa </span>
-            <span class="icon text-white-50">
-                <i class="fas fa-pencil-alt"></i>
-            </span>
-        </a>
+<style>
+    span.text {
+        font-weight: normal;
+        font-size: 1.1rem;
+        color: #ffffff;
+    }
+</style>
 
-        <a href="{% url 'index' %}" class="btn btn-secondary btn-sm mt-3" style="margin-left: 20px;">
-            <span class="text">Voltar para home</span>
-        </a>
-    </div>
-
-
-
-    <div class="card-body">
-        <h4 class="mb-3 text-primary">
-            Lista de Tarefas
-        </h4>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <div class="card shadow mb-4" style="border-radius: 20px;">
-        <div class="table-responsive" style="border-radius: 20px;">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="bg-primary text-white text-center">Atividade</th>
-                        <th class="bg-primary text-white text-center">Oportunidade</th>
-                        <th class="bg-primary text-white text-center">Contato</th>
-                        <th class="bg-primary text-white text-center">Telefone</th>
-                        <th class="bg-primary text-white text-center">Email</th>
-                        <th class="bg-primary text-white text-center">Data</th>
-                        <th class="bg-primary text-white text-center">Status</th>
-                        <th class="bg-primary text-white text-center">Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for tarefa in list_tarefas %}
-                        <tr>
-                            <td><a href="#" style="font-weight: bolder;">{{ tarefa.atividade }}</a></td>
-                            <td><a href="#" style="font-weight: bolder;">{{ tarefa.oportunidade }}</a></td>
-                            <td class="text-center">{{ tarefa.contato}}</td>
-                            <td>{{ tarefa.telefone }}</td>
-                            <td>{{ tarefa.email }}</td>
-                            <td>{{ tarefa.data }}</td>
-                            <td>{{ tarefa.concluida}}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Ações
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'tarefa_update' tarefa.id %}">Editar</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">Detalhes</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="#">Excluir</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<nav class="navbar navbar-expand-lg navbar-light bg-primary" style="padding: 5px; margin: 100px 100px 40px; width: 75%; border-radius: 15px;">
+    <div class="container-fluid">
+        <div class="d-flex justify-content-center w-100">
+            <a href="{% url 'tarefa_create' %}" class="btn btn-icon-split btn-sm open-popup" data-popup-url="{% url 'empresa_create' %}">
+                <span class="text">Nova Tarefa</span>
+            </a>
+            <a href="#" onclick="showMinhasTarefas(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Minhas Tarefas</span>
+            </a>
+            <a href="#" onclick="showAllTarefas(event)" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Todas Tarefas</span>
+            </a>
+            <a href="{% url 'kanban_oportunidade' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Negócios</span>
+            </a>
+            <a href="{% url 'kanban' %}" class="btn btn-sm" style="margin-left: 20px;">
+                <span class="text">Kanban de Tarefas</span>
+            </a>
+            <a href="{% url 'index' %}" class="btn btn-sm" style="margin-left: 20px;" data-popup-url="{% url 'index' %}">
+                <span class="text">Voltar para home</span>
+            </a>
         </div>
     </div>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mt-3 p-3">
+    <h4 class="mt-4 text-primary">
+        Lista de Tarefas
+    </h4>
 </div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card shadow mb-4" style="border-radius: 20px;">
+    <div class="table-responsive" style="border-radius: 20px;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="bg-primary text-white text-center">Atividade</th>
+                    <th class="bg-primary text-white text-center">Negócios</th>
+                    <th class="bg-primary text-white text-center">Contato</th>
+                    <th class="bg-primary text-white text-center">Telefone</th>
+                    <th class="bg-primary text-white text-center">Email</th>
+                    <th class="bg-primary text-white text-center">Data</th>
+                    <th class="bg-primary text-white text-center">Status</th>
+                    <th class="bg-primary text-white text-center">Vendedor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarefa in list_tarefas %}
+                    <tr class="tarefa-row" data-vendedor-id="{{ tarefa.usuario.id }}">
+                        <td><a href="{% url 'tarefa_update' tarefa.id %}" style="font-weight: bolder;">{{ tarefa.atividade }}</a></td>
+                        <td><a href="{% url 'editar_oportunidade' tarefa.id %}" style="font-weight: bolder;">{{ tarefa.negocio }}</a></td>
+                        <td class="text-center">{{ tarefa.contato }}</td>
+                        <td>{{ tarefa.telefone }}</td>
+                        <td>{{ tarefa.email }}</td>
+                        <td>{{ tarefa.data_inicio }}</td>
+                        <td>{{ tarefa.status }}</td>
+                        <td>{{ tarefa.usuario }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function showAllTarefas(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+        const rows = document.querySelectorAll('.tarefa-row');
+        rows.forEach(row => {
+            row.style.display = 'table-row';
+        });
+    }
+
+    function showMinhasTarefas(event) {
+        event.preventDefault();  // Previne o comportamento padrão do link
+        const userId = '{{ request.user.id }}';
+        const rows = document.querySelectorAll('.tarefa-row');
+        rows.forEach(row => {
+            if (row.dataset.vendedorId === userId) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+</script>
 
 {% endblock conteudo %}

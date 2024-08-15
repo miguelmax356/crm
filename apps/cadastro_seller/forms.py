@@ -1,5 +1,6 @@
 from django import forms
 from cadastro_seller.models import Empresa, Oportunidade, Tarefa, Lead
+from contatos.models import Contato
 
 
 
@@ -26,6 +27,8 @@ class TarefaForm(forms.ModelForm):
                 ('concluida', 'Concluída'),
             ])
         }
+
+   
 
 class LeadForm(forms.ModelForm):
     class Meta:

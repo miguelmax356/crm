@@ -22,8 +22,12 @@ from cadastro_seller.views import (
     lead_create,
     kanban_oportunidade,
     update_kanban_op,
+    eventos_json,
+    eventos_view,
+    
 )
 from usuarios.views import perfil, detalhes_perfil
+from contatos.views import contatos, create_contato, contato_update
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -62,11 +66,22 @@ urlpatterns = [
     path('tarefas-kanban/', kanban, name='kanban'),
     path('tarefas-update-kanban/<int:id>/', update_status, name='update_kanban'),
 
+    
+
+    #path('tarefa-calendario/', calendario, name='calendario'),
+    path('eventos-view/', eventos_view, name='eventos_view'),
+    path('eventos-json/', eventos_json, name='eventos_json'),
+
     #URLS sobre Leads
     path('leads/', list_leads, name='list_leads'),
     path('leads/new/', lead_create, name='lead_create'),
 
 
+    #tcontatos
+    path('contatos/', contatos, name='list_contatos'),
+    path('contatos/new', create_contato, name='create_contato'),
+    path('contatos/<int:pk>/edit/', contato_update, name='contato_update'),
+    
     
 ]
 
